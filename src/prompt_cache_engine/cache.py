@@ -6,10 +6,10 @@ import hashlib
 import logging
 import time
 from collections import OrderedDict
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from dataclasses import dataclass
+from typing import Any
 
-from prompt_cache_engine.exceptions import CacheFullError, EvictionError
+from prompt_cache_engine.exceptions import CacheFullError
 from prompt_cache_engine.models import BatchAnalysis, CacheConfig, CacheStats, PrefixMatch
 from prompt_cache_engine.trie import RadixTrie
 
@@ -35,7 +35,7 @@ class CacheEntry:
     """
 
     cache_key: str
-    tokens: Tuple[int, ...]
+    tokens: tuple[int, ...]
     kv_data: Any = None
     token_count: int = 0
     memory_bytes: int = 0
@@ -54,7 +54,7 @@ class CacheEntry:
             self.last_accessed = self.created_at
 
 
-def _compute_cache_key(tokens: Tuple[int, ...]) -> str:
+def _compute_cache_key(tokens: tuple[int, ...]) -> str:
     """Compute a deterministic cache key from a token sequence.
 
     Args:
@@ -75,7 +75,7 @@ class CacheManager:
     TTL expiry, and batch prefix analysis.
     """
 
-    def __init__(self, config: Optional[CacheConfig] = None) -> None:
+    def __init__(self, config: CacheConfig | None = None) -> None:
         """Initialize the cache manager.
 
         Args:
@@ -100,7 +100,7 @@ class CacheManager:
         self._stats.memory_used_mb = self._total_memory_bytes / (1024 * 1024)
         return self._stats
 
-    def lookup(self, tokens: Tuple[int, ...]) -> PrefixMatch:
+    def lookup(self, tokens: tuple[int, ...]) -> PrefixMatch:
         """Look up the longest cached prefix for a token sequence.
 
         Args:
@@ -151,7 +151,7 @@ class CacheManager:
 
     def store(
         self,
-        tokens: Tuple[int, ...],
+        tokens: tuple[int, ...],
         kv_data: Any = None,
         memory_bytes: int = 0,
     ) -> str:
@@ -169,7 +169,9 @@ class CacheManager:
             CacheFullError: If entry cannot be stored after eviction
         """
         if len(tokens) < self.config.min_prefix_length:
-            logger.debug(f"Skipping store: {len(tokens)} tokens < min {self.config.min_prefix_length}")
+            logger.debug(
+                f"Skipping store: {len(tokens)} tokens < min {self.config.min_prefix_length}"
+            )
             return ""
 
         cache_key = _compute_cache_key(tokens)
@@ -224,7 +226,7 @@ class CacheManager:
 
     def analyze_batch(
         self,
-        token_sequences: List[Tuple[int, ...]],
+        token_sequences: list[tuple[int, ...]],
     ) -> BatchAnalysis:
         """Analyze prefix sharing potential within a batch.
 
@@ -241,7 +243,7 @@ class CacheManager:
             return BatchAnalysis()
 
         # Build a temporary trie for analysis
-        analysis_trie: Dict[Tuple[int, ...], List[int]] = {}
+        analysis_trie: dict[tuple[int, ...], list[int]] = {}
 
         for idx, tokens in enumerate(token_sequences):
             # Find the longest prefix shared with any other sequence
@@ -252,8 +254,8 @@ class CacheManager:
                 analysis_trie[prefix].append(idx)
 
         # Find maximal shared prefixes (prefixes appearing 2+ times)
-        shared_groups: Dict[str, List[int]] = {}
-        assigned: Dict[int, int] = {}  # idx -> best prefix length
+        shared_groups: dict[str, list[int]] = {}
+        assigned: dict[int, int] = {}  # idx -> best prefix length
 
         sorted_prefixes = sorted(analysis_trie.keys(), key=len, reverse=True)
         for prefix in sorted_prefixes:
@@ -289,7 +291,7 @@ class CacheManager:
             total_tokens=total_tokens,
         )
 
-    def get_entry(self, cache_key: str) -> Optional[CacheEntry]:
+    def get_entry(self, cache_key: str) -> CacheEntry | None:
         """Get a cache entry by key without updating access tracking.
 
         Args:

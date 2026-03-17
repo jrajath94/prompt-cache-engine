@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +26,9 @@ class TrieNode:
         depth: Total token depth from root to end of this node's segment
     """
 
-    tokens: Tuple[int, ...] = ()
-    children: Dict[int, TrieNode] = field(default_factory=dict)
-    cache_key: Optional[str] = None
+    tokens: tuple[int, ...] = ()
+    children: dict[int, TrieNode] = field(default_factory=dict)
+    cache_key: str | None = None
     depth: int = 0
 
 
@@ -53,7 +52,7 @@ class RadixTrie:
 
     def insert(
         self,
-        tokens: Tuple[int, ...],
+        tokens: tuple[int, ...],
         cache_key: str,
     ) -> None:
         """Insert a token sequence with its cache key.
@@ -139,8 +138,8 @@ class RadixTrie:
 
     def find_longest_prefix(
         self,
-        tokens: Tuple[int, ...],
-    ) -> Tuple[int, Optional[str]]:
+        tokens: tuple[int, ...],
+    ) -> tuple[int, str | None]:
         """Find the longest cached prefix matching the given tokens.
 
         Args:
@@ -156,7 +155,7 @@ class RadixTrie:
         node = self.root
         pos = 0
         best_length = 0
-        best_key: Optional[str] = None
+        best_key: str | None = None
 
         # Check root for cache key
         if node.cache_key is not None:
@@ -194,7 +193,7 @@ class RadixTrie:
 
         return best_length, best_key
 
-    def remove(self, tokens: Tuple[int, ...]) -> bool:
+    def remove(self, tokens: tuple[int, ...]) -> bool:
         """Remove a cached prefix entry.
 
         Args:
@@ -209,7 +208,7 @@ class RadixTrie:
         # Navigate to the node
         node = self.root
         pos = 0
-        path: List[Tuple[TrieNode, int]] = []  # (parent, first_token)
+        path: list[tuple[TrieNode, int]] = []  # (parent, first_token)
 
         while pos < len(tokens):
             first_token = tokens[pos]
@@ -240,21 +239,21 @@ class RadixTrie:
         self._size -= 1
         return True
 
-    def get_all_entries(self) -> List[Tuple[Tuple[int, ...], str]]:
+    def get_all_entries(self) -> list[tuple[tuple[int, ...], str]]:
         """Get all cached entries as (token_sequence, cache_key) pairs.
 
         Returns:
             List of all cached token sequences with their cache keys
         """
-        entries: List[Tuple[Tuple[int, ...], str]] = []
+        entries: list[tuple[tuple[int, ...], str]] = []
         self._collect_entries(self.root, (), entries)
         return entries
 
     def _collect_entries(
         self,
         node: TrieNode,
-        prefix: Tuple[int, ...],
-        entries: List[Tuple[Tuple[int, ...], str]],
+        prefix: tuple[int, ...],
+        entries: list[tuple[tuple[int, ...], str]],
     ) -> None:
         """Recursively collect all entries from the trie.
 

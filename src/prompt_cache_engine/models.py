@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
 
 
 @dataclass
@@ -52,11 +51,11 @@ class PrefixMatch:
         hit: Whether a cache hit occurred
     """
 
-    matched_tokens: Tuple[int, ...] = ()
+    matched_tokens: tuple[int, ...] = ()
     matched_length: int = 0
     total_length: int = 0
     cache_key: str = ""
-    remaining_tokens: Tuple[int, ...] = ()
+    remaining_tokens: tuple[int, ...] = ()
     hit: bool = False
 
     @property
@@ -120,7 +119,7 @@ class BatchAnalysis:
 
     batch_size: int = 0
     unique_prefixes: int = 0
-    shared_prefix_groups: Dict[str, List[int]] = field(default_factory=dict)
+    shared_prefix_groups: dict[str, list[int]] = field(default_factory=dict)
     potential_savings_tokens: int = 0
     total_tokens: int = 0
 

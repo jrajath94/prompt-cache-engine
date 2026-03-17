@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import sys
 
 import click
 
@@ -56,7 +55,8 @@ def demo(prompts: tuple, max_entries: int, min_prefix: int) -> None:
         match = manager.lookup(tokens)
 
         if match.hit:
-            click.echo(f"HIT:  '{prompt[:50]}...' ({match.matched_length}/{match.total_length} tokens cached)")
+            cached_info = f"{match.matched_length}/{match.total_length} tokens cached"
+            click.echo(f"HIT:  '{prompt[:50]}...' ({cached_info})")
         else:
             manager.store(tokens)
             click.echo(f"MISS: '{prompt[:50]}...' ({len(tokens)} tokens stored)")

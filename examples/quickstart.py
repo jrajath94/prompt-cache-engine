@@ -62,7 +62,7 @@ def main() -> None:
     print("-" * 70)
     print()
 
-    for i, (prompt, tokens) in enumerate(zip(full_prompts, token_sequences)):
+    for i, (_prompt, tokens) in enumerate(zip(full_prompts, token_sequences, strict=False)):
         match = cache.lookup(tokens)
 
         if match.hit:

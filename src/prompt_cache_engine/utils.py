@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from typing import List, Tuple
 
 from prompt_cache_engine.models import BatchAnalysis, CacheStats
 
@@ -63,7 +62,7 @@ def format_batch_analysis(analysis: BatchAnalysis) -> str:
     return "\n".join(lines)
 
 
-def tokenize_simple(text: str) -> Tuple[int, ...]:
+def tokenize_simple(text: str) -> tuple[int, ...]:
     """Simple whitespace tokenizer for demonstration purposes.
 
     In production, use a real tokenizer (tiktoken, sentencepiece, etc.).
@@ -79,8 +78,8 @@ def tokenize_simple(text: str) -> Tuple[int, ...]:
 
 
 def find_common_prefix_length(
-    seq_a: Tuple[int, ...],
-    seq_b: Tuple[int, ...],
+    seq_a: tuple[int, ...],
+    seq_b: tuple[int, ...],
 ) -> int:
     """Find the length of the common prefix between two sequences.
 

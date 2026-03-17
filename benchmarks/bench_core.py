@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass
-from typing import List, Tuple
 
 from prompt_cache_engine.cache import CacheManager
 from prompt_cache_engine.models import CacheConfig
@@ -31,7 +30,7 @@ def generate_token_sequences(
     prefix_length: int,
     suffix_length: int,
     num_unique_prefixes: int = 10,
-) -> List[Tuple[int, ...]]:
+) -> list[tuple[int, ...]]:
     """Generate token sequences with shared prefixes.
 
     Args:
@@ -43,7 +42,7 @@ def generate_token_sequences(
     Returns:
         List of token sequences
     """
-    sequences: List[Tuple[int, ...]] = []
+    sequences: list[tuple[int, ...]] = []
     for i in range(count):
         prefix_id = i % num_unique_prefixes
         prefix = tuple(range(prefix_id * 1000, prefix_id * 1000 + prefix_length))
@@ -57,7 +56,7 @@ def bench_trie_insert() -> BenchResult:
     n_entries = 50000
     sequences = generate_token_sequences(n_entries, prefix_length=20, suffix_length=10)
 
-    timings: List[float] = []
+    timings: list[float] = []
     for _ in range(NUM_ITERATIONS):
         trie = RadixTrie()
         start = time.perf_counter()
@@ -87,7 +86,7 @@ def bench_trie_lookup() -> BenchResult:
     queries = sequences[:5000] + generate_token_sequences(5000, prefix_length=20, suffix_length=15)
     n_lookups = len(queries)
 
-    timings: List[float] = []
+    timings: list[float] = []
     for _ in range(NUM_ITERATIONS):
         start = time.perf_counter()
         for query in queries:
@@ -110,7 +109,7 @@ def bench_cache_store() -> BenchResult:
 
     config = CacheConfig(max_entries=n_entries + 1, min_prefix_length=2)
 
-    timings: List[float] = []
+    timings: list[float] = []
     for _ in range(NUM_ITERATIONS):
         cache = CacheManager(config=config)
         start = time.perf_counter()
@@ -145,7 +144,7 @@ def bench_cache_lookup() -> BenchResult:
 
     n_lookups = len(queries)
 
-    timings: List[float] = []
+    timings: list[float] = []
     for _ in range(NUM_ITERATIONS):
         start = time.perf_counter()
         for query in queries:
@@ -169,7 +168,7 @@ def bench_batch_analysis() -> BenchResult:
     config = CacheConfig(min_prefix_length=4)
     cache = CacheManager(config=config)
 
-    timings: List[float] = []
+    timings: list[float] = []
     for _ in range(NUM_ITERATIONS):
         start = time.perf_counter()
         cache.analyze_batch(sequences)
@@ -194,7 +193,7 @@ def main() -> None:
         bench_batch_analysis,
     ]
 
-    results: List[BenchResult] = []
+    results: list[BenchResult] = []
     for bench_fn in benchmarks:
         results.append(bench_fn())
 

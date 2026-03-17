@@ -4,10 +4,7 @@ from __future__ import annotations
 
 import time
 
-import pytest
-
 from prompt_cache_engine.cache import CacheManager, _compute_cache_key
-from prompt_cache_engine.exceptions import CacheFullError
 from prompt_cache_engine.models import CacheConfig
 
 
