@@ -5,7 +5,7 @@
 [![CI](https://github.com/jrajath94/prompt-cache-engine/workflows/CI/badge.svg)](https://github.com/jrajath94/prompt-cache-engine/actions)
 [![Coverage](https://img.shields.io/badge/coverage-84%25-green)](https://github.com/jrajath94/prompt-cache-engine)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
 
 ## The Problem
 
@@ -94,25 +94,17 @@ print(f"Saveable tokens: {analysis.potential_savings_tokens}")
 
 ## Key Results
 
-Measured on Apple M2, Python 3.9:
+Measured on Darwin, Python 3.14:
 
 | Benchmark      | Items  | Time (s) | Throughput |
 | -------------- | ------ | -------- | ---------- |
-| Trie Insert    | 50,000 | 0.3202   | 156,160/s  |
-| Trie Lookup    | 10,000 | 0.0665   | 150,372/s  |
-| Cache Store    | 10,000 | 0.1662   | 60,168/s   |
-| Cache Lookup   | 5,000  | 0.0351   | 142,346/s  |
-| Batch Analysis | 1,000  | 0.0944   | 10,597/s   |
+| Trie Insert    | 50,000 | 0.2339   | 213,733/s  |
+| Trie Lookup    | 10,000 | 0.0360   | 278,099/s  |
+| Cache Store    | 10,000 | 0.1760   | 56,802/s   |
+| Cache Lookup   | 5,000  | 0.0245   | 203,782/s  |
+| Batch Analysis | 1,000  | 0.0790   | 12,661/s   |
 
-At production scale (from Llama 2 7B benchmarks with customer support traffic):
-
-| Metric                              | No Caching | With Prefix Cache | Improvement      |
-| ----------------------------------- | ---------- | ----------------- | ---------------- |
-| Avg request latency (100 token gen) | 2,340ms    | 1,240ms           | 1.89x faster     |
-| Latency with 80% prefix hits        | 2,340ms    | 520ms             | 4.5x faster      |
-| Memory (1000 queries)               | 14 GB      | 16.2 GB           | +2.2 GB overhead |
-
-The trie handles 150K prefix searches per second -- far exceeding the throughput of any LLM inference engine. The cache is never the bottleneck.
+The trie easily handles lookups at throughput levels far exceeding the throughput of any LLM inference engine. The cache is never the bottleneck.
 
 ## Design Decisions
 
