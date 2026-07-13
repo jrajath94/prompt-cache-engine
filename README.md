@@ -3,7 +3,6 @@
 > Stop recomputing the same attention states -- prefix-aware KV cache deduplication for LLM inference
 
 [![CI](https://github.com/jrajath94/prompt-cache-engine/workflows/CI/badge.svg)](https://github.com/jrajath94/prompt-cache-engine/actions)
-[![Coverage](https://img.shields.io/badge/coverage-84%25-green)](https://github.com/jrajath94/prompt-cache-engine)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
 
@@ -92,19 +91,9 @@ print(f"Dedup ratio: {analysis.dedup_ratio:.0%}")
 print(f"Saveable tokens: {analysis.potential_savings_tokens}")
 ```
 
-## Key Results
+## Performance
 
-Measured on Darwin, Python 3.14:
-
-| Benchmark      | Items  | Time (s) | Throughput |
-| -------------- | ------ | -------- | ---------- |
-| Trie Insert    | 50,000 | 0.2339   | 213,733/s  |
-| Trie Lookup    | 10,000 | 0.0360   | 278,099/s  |
-| Cache Store    | 10,000 | 0.1760   | 56,802/s   |
-| Cache Lookup   | 5,000  | 0.0245   | 203,782/s  |
-| Batch Analysis | 1,000  | 0.0790   | 12,661/s   |
-
-The trie easily handles lookups at throughput levels far exceeding the throughput of any LLM inference engine. The cache is never the bottleneck.
+The trie and cache components are designed for minimal overhead. Performance benchmarks can be run with `make bench` -- see `benchmarks/bench_core.py` for the full suite of throughput tests across trie operations, cache operations, and batch analysis.
 
 ## Design Decisions
 
@@ -132,7 +121,7 @@ One subtlety worth noting: cache invalidation is harder than it looks. Temperatu
 ## Testing
 
 ```bash
-make test    # 68 tests, 84% coverage
+make test    # Run unit and integration tests
 make bench   # Performance benchmarks
 make lint    # Ruff + mypy
 make run     # Run quickstart example
