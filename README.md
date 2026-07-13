@@ -138,7 +138,7 @@ prompt-cache-engine/
 │   ├── utils.py          # Formatting helpers and simple tokenizer
 │   ├── cli.py            # Click-based CLI
 │   └── exceptions.py     # CacheMissError, CacheFullError, InvalidPrefixError
-├── tests/                # 68 unit + integration tests
+├── tests/                # 62 comprehensive tests
 ├── benchmarks/           # Throughput benchmarks for trie and cache operations
 ├── examples/             # Quick-start example with batch analysis
 └── docs/                 # Architecture documentation
